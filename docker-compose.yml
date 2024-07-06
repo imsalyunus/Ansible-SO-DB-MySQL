@@ -1,3 +1,62 @@
+#############
+named.conf.local
+#############
+
+zone "int.pelitabangsa.ac.id" {
+     type master;
+     file "/etc/bind/db.int.pelitabangsa.ac.id";
+     allow-transfer { 172.10.6.25; };
+};
+
+zone "172.10.6.in-addr.arpa" {
+     type master;
+     file "/etc/bind/db.172";
+     allow-transfer { 172.10.6.25; };
+};
+
+#############
+db.int.pelitabangsa.ac.id
+#############
+
+;
+; BIND data file for yourdomain.com
+;
+$TTL    604800
+@       IN      SOA     int.pelitabangsa.ac.id. root.int.pelitabangsa.ac.id. (
+                              4         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns1.int.pelitabangsa.ac.id.
+@       IN      NS      ns2.int.pelitabangsa.ac.id.
+ns1     IN      A       172.10.6.136
+ns2     IN      A       172.10.6.25
+@       IN      A       172.10.6.136
+www     IN      CNAME   int.pelitabangsa.ac.id.
+
+#############
+db.172
+#############
+;
+; BIND reverse data  file local loopback interface
+;
+$TTL    604800
+@       IN      SOA     ns1.int.pelitabangsa.ac.id. root.int.pelitabangsa.ac.id. (
+                              4         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns1.int.pelitabangsa.ac.id.
+136     IN      PTR     ns1.int.pelitabangsa.ac.id.
+25      IN      PTR     ns2.int.pelitabangsa.ac.id.
+136     IN      PTR     int.pelitabangsa.ac.id.
+
+#################################################################
+
 ---
 - name: Configure DNS master server on Debian
   hosts: debian-server  # Sesuaikan dengan nama host yang sesuai dengan file hosts Anda
