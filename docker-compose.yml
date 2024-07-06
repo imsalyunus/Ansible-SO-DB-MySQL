@@ -1,27 +1,50 @@
-version: '2'
-services:
-   db:
-     image: mysql:5.7
-     volumes:
-       - db_data:/var/lib/mysql
-     restart: always
-     environment:
-       MYSQL_ROOT_PASSWORD: wordpress
-       MYSQL_DATABASE: wordpress
-       MYSQL_USER: wordpress
-       MYSQL_PASSWORD: wordpress
+---
+- name: Configure DNS master server on Debian
+  hosts: debian-server  # Sesuaikan dengan nama host yang sesuai dengan file hosts Anda
+  become: yes
+  tasks:
+    - name: Update apt cache and upgrade packages
+      apt:
+        update_cache: yes
+        upgrade: yes
 
-   wordpress:
-     depends_on:
-       - db
-     build: ./wordpress
-     ports:
-       - "8000:80"
-     restart: always
-     environment:
-       WORDPRESS_DB_HOST: db:3306
-       WORDPRESS_DB_PASSWORD: wordpress
-     volumes: 
-       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini 
-volumes:
-    db_data:
+    - name: Install BIND on Debian
+      apt:
+        name: bind9
+        state: present
+
+    - name: Copy named.conf.local to /etc/bind/
+      copy:
+        src: files/named.conf.local
+        dest: /etc/bind/named.conf.local
+      notify: restart bind9
+
+    - name: Copy db.int.pelitabangsa.ac.id to /etc/bind/
+      copy:
+        src: files/db.int.pelitabangsa.ac.id
+        dest: /etc/bind/db.int.pelitabangsa.ac.id
+      notify: restart bind9
+
+    - name: Copy db.172 to /etc/bind/
+      copy:
+        src: files/db.172
+        dest: /etc/bind/db.172
+      notify: restart bind9
+
+    - name: Check named.conf.local syntax
+      command: named-checkconf
+      register: check_named_conf
+
+    - name: Check db.int.pelitabangsa.ac.id syntax
+      command: named-checkzone int.pelitabangsa.ac.id /etc/bind/db.int.pelitabangsa.ac.id
+      register: check_zone_int
+
+    - name: Check db.172 syntax
+      command: named-checkzone 172.10.6.in-addr.arpa /etc/bind/db.172
+      register: check_reverse_zone
+
+  handlers:
+    - name: restart bind9
+      service:
+        name: bind9
+        state: restarted
