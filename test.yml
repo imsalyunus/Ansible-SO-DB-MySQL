@@ -1,18 +1,20 @@
 ---
 - name: Primary
   hosts: 10.50.11.231
-  become: yes
   tasks:
-    - name: Ensure mysqlsh is installed
-      apt:
-        name: mysql-shell
-        state: present
+    - name: Ensure using mysql user
+      shell: whoami
+
+    - name: Switch to mysqlsh
+      shell: mysqlsh
 
     - name: Get MySQL Cluster Set Status
-      command: >
-        /usr/bin/mysqlsh inno_cluster:mysql@10.50.11.231:3306 -- clusterset status
+      shell: \c inno_cluster@10.50.11.231:3306
+      
+    - name: Get MySQL Cluster Set Status
+      shell: clusterset status
       register: cluster_status
-
+       
     - name: Print Cluster Status
       debug:
         var: cluster_status.stdout
