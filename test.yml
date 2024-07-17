@@ -1,6 +1,6 @@
 ---
 - name: Primary
-  hosts: 	10.50.11.231
+  hosts: 10.50.11.231
   become: yes
   tasks:
     - name: Get MySQL Cluster Set Status
