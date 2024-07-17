@@ -25,9 +25,9 @@
 
     - name: Check session lists
       shell: mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
-      register: session-list
+      register: session_lists
 
     - name: Print Session List
       debug:
-        var: session-list.stdout
+        var: session_lists.stdout
       
