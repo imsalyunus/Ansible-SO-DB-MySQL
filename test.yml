@@ -24,7 +24,7 @@
         var: cluster_status.stdout
 
     - name: Check session lists
-      shell: mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
+      shell: /apps/mysql/mysql-8.0.38/bin/mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
       register: session_lists
 
     - name: Print Session List
