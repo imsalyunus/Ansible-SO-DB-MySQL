@@ -1,10 +1,10 @@
 ---
-name: Preparing DB before switch over
-hosts: 10.50.11.231
-tasks:
-  - name: Switch Over DB
-    shell: mysqlsh inno_cluster:mysql@10.50.11.231:3306 --cluster --interactive -e"cluster.getClusterSet().setPrimaryCluster('Cluster_DRC')"
-    register: switch_result
+- name: Preparing DB before switch over
+  hosts: 10.50.11.231
+  tasks:
+    - name: Switch Over DB
+      shell: mysqlsh inno_cluster:mysql@10.50.11.231:3306 --cluster --interactive -e"cluster.getClusterSet().setPrimaryCluster('Cluster_DRC')"
+      register: switch_result
 
-  - name: Print status of Switch Over DB
-    debug: switch_result.stdout
+    - name: Print status of Switch Over DB
+      debug: switch_result.stdout
