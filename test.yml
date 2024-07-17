@@ -2,11 +2,11 @@
 - name: Primary
   hosts: 10.50.11.231
   tasks:
-    - name: Switch to mysql user
-      shell: su - mysql
-  
     - name: Ensure using mysql user
       shell: whoami
+  
+    - name: Switch to mysql user
+      shell: su - mysql
 
     - name: Switch to mysqlsh
       shell: mysqlsh
