@@ -1,0 +1,17 @@
+---
+- name: Preparing DB before switch Back 
+  hosts: 10.50.11.232
+  tasks:
+    - name: Check status current primary DB
+      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.232:3306 -- clusterset status
+      register: status_result
+
+    - name: Print status of primary DB
+      debug: 
+        var: status_result.stdout
+  
+    - name: Show session in database
+      shell: /apps/mysql/mysql-8.0.38/bin/mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
+
+    - name: Check table row site A
+      shell: /apps/mysql/mysql-8.0.38/bin/mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"select count(*) from test.Persons;"
