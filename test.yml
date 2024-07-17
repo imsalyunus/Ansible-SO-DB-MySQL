@@ -9,7 +9,7 @@
 ##      shell: su - mysql
 
     - name: Switch to mysqlsh
-      shell: mysqlsh inno_cluster:mysql@10.50.11.231:3306 -- clusterset status
+      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.231:3306 -- clusterset status
       register: cluster_status
 
 ##    - name: Get MySQL Cluster Set Status
