@@ -1,0 +1,11 @@
+---
+- name: Preparing DB before switch Back
+  hosts: 10.50.11.232
+  tasks:
+    - name: Switch Back DB from DRC to DC
+      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.232:3306 --cluster --interactive -e"cluster.getClusterSet().setPrimaryCluster('Cluster_DC')"
+      register: switch_result
+
+    - name: Print status of Switch Back DB from DRC to DC
+      debug: 
+        var: switch_result.stdout
