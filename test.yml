@@ -9,7 +9,7 @@
 ##      shell: su - mysql
 
     - name: Switch to mysqlsh
-      shell: mysqlsh
+      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh
 
     - name: Get MySQL Cluster Set Status
       shell: \c inno_cluster@10.50.11.231:3306
