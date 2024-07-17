@@ -3,7 +3,7 @@
   hosts: 10.50.11.231
   tasks:
     - name: Switch Over DB
-      shell: mysqlsh inno_cluster:mysql@10.50.11.231:3306 --cluster --interactive -e"cluster.getClusterSet().setPrimaryCluster('Cluster_DRC')"
+      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.231:3306 --cluster --interactive -e"cluster.getClusterSet().setPrimaryCluster('Cluster_DRC')"
       register: switch_result
 
     - name: Print status of Switch Over DB
