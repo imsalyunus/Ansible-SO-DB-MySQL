@@ -7,7 +7,8 @@
       register: status_result
 
     - name: Print status of primary DB
-      debug: status_result.stdout
+      debug: 
+        var: status_result.stdout
   
     - name: Show session in database
       shell: /apps/mysql/mysql-8.0.38/bin/mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
