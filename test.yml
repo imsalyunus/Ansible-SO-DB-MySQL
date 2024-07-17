@@ -22,3 +22,12 @@
     - name: Print Cluster Status
       debug:
         var: cluster_status.stdout
+
+    - name: Check session lists
+      shell: mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
+      register: session-list
+
+    - name: Print Session List
+      debug:
+        var: session-list.stdout
+      
