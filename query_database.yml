@@ -1,0 +1,23 @@
+---
+- name: Query Oracle Database Role and Switchover Status
+  hosts: linuxdb
+  tasks:
+    - name: Source the bash profile and set environment variables
+      shell: |
+        # Set Environment Variables
+        export ORACLE_HOME=/u01/app/oracle/product/19.3.0/dbhome_1
+        export ORACLE_SID=orcl
+        export PATH=$PATH:$ORACLE_HOME/bin
+
+        # Run SQL Query
+        sqlplus -s / as sysdba <<EOF
+        SET HEADING OFF
+        SET PAGESIZE 0
+        SELECT database_role || ',' || switchover_status FROM v\$database;
+        EOF
+      register: db_status
+      ignore_errors: yes
+
+    - name: Display the database status
+      debug:
+        msg: "Database Status: {{ db_status.stdout }}"
