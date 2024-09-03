@@ -3,7 +3,7 @@
   hosts: 10.50.11.232
   tasks:
     - name: Check status current primary DB
-      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.232:3306 -- clusterset status
+      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.232:3306 -- cluster status
       register: status_result
 
     - name: Print status of primary DB
