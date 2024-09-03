@@ -1,0 +1,16 @@
+---
+- name: Preparing DB before switch over
+  hosts: 10.50.11.231
+  tasks:
+    - name: Check status current primary DB
+      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.231:3306 -- cluster status
+      register: status_result
+
+    - name: Print status of primary DB
+      debug:
+        var: status_result.stdout
+
+    - name: Fail if cluster role is not REPLICA
+      fail:
+        msg: "The current DB role is not REPLICA. Exiting the process."
+      when: "'\"clusterRole\": \"REPLICA\"' not in status_result.stdout"
