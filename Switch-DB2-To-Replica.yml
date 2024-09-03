@@ -5,7 +5,8 @@
     - name: Switch Back DB from DRC to DC
       shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.232:3306 --cluster --interactive -e"cluster.getClusterSet().setPrimaryCluster('Cluster_DC')"
       register: switch_result
+      ignore_errors: yes  # Menambahkan ini untuk memastikan playbook tidak berhenti jika perintah gagal
 
-    - name: Print status of Switch Back DB from DRC to DC
-      debug: 
-        var: switch_result.stdout
+    - name: Display switch result
+      debug:
+        msg: "{{ switch_result.stdout }}"
