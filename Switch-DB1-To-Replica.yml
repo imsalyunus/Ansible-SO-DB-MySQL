@@ -7,5 +7,5 @@
       register: switch_result
 
     - name: Print status of Switch Over DB
-      debug: 
+      debug:
         var: switch_result.stdout
