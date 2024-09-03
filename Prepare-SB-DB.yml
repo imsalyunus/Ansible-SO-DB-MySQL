@@ -1,5 +1,5 @@
 ---
-- name: Preparing DB before switch Back 
+- name: Preparing DB before switch over
   hosts: 10.50.11.232
   tasks:
     - name: Check status current primary DB
@@ -7,11 +7,18 @@
       register: status_result
 
     - name: Print status of primary DB
-      debug: 
+      debug:
         var: status_result.stdout
-  
+
+    - name: Verify cluster role is PRIMARY
+      set_fact:
+        is_primary: "{{ 'clusterRole\": \"PRIMARY\"' in status_result.stdout }}"
+
+    - name: Fail if cluster role is not PRIMARY
+      fail:
+        msg: "The cluster role is not PRIMARY. Please investigate."
+      when: not is_primary
+
     - name: Show session in database
       shell: /apps/mysql/mysql-8.0.38/bin/mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
-
-    - name: Check table row site A
-      shell: /apps/mysql/mysql-8.0.38/bin/mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"select count(*) from test.Persons;"
+      when: is_primary
