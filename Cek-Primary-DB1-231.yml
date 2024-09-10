@@ -1,24 +1,39 @@
+#---
+#- name: Preparing DB before switch over
+#  hosts: 10.50.11.231
+#  tasks:
+#    - name: Check status current primary DB
+#      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.231:3306 -- cluster status
+#      register: status_result
+
+#    - name: Print status of primary DB
+#      debug:
+#        var: status_result.stdout
+
+#    - name: Verify cluster role is PRIMARY
+#      set_fact:
+#        is_primary: "{{ 'clusterRole\": \"PRIMARY\"' in status_result.stdout }}"
+
+#    - name: Fail if cluster role is not PRIMARY
+#      fail:
+#        msg: "The cluster role is not PRIMARY. Please investigate."
+#      when: not is_primary
+
+#    - name: Show session in database
+#      shell: /apps/mysql/mysql-8.0.38/bin/mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
+#      when: is_primary
 ---
 - name: Preparing DB before switch over
   hosts: 10.50.11.231
   tasks:
     - name: Check status current primary DB
-      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.231:3306 -- cluster status
+      shell: /apps/mysql/mysql-shell-8.0.38/bin/mysqlsh inno_cluster:mysql@10.50.11.231:3306 -- clusterset status
       register: status_result
 
     - name: Print status of primary DB
       debug:
         var: status_result.stdout
 
-    - name: Verify cluster role is PRIMARY
+    - name: Ensure Cluster_DC is present
       set_fact:
-        is_primary: "{{ 'clusterRole\": \"PRIMARY\"' in status_result.stdout }}"
-
-    - name: Fail if cluster role is not PRIMARY
-      fail:
-        msg: "The cluster role is not PRIMARY. Please investigate."
-      when: not is_primary
-
-    - name: Show session in database
-      shell: /apps/mysql/mysql-8.0.38/bin/mysql -uroot -pmysql123 -h127.0.0.1 -P3306 -e"show processlist;"
-      when: is_primary
+        cluster_dc: "{{ (status_result.stdout | from_json).Cluster_DC | default('not found')
